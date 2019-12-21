@@ -1,0 +1,11 @@
+${AnsiColor.BLUE}              _    _               _            _____   _
+${AnsiColor.BLUE}             | |  | |             | |          / ____| | |
+${AnsiColor.BLUE}             | |__| |  _   _    __| |   ___   | (___   | | __  _   _
+${AnsiColor.BLUE}             |  __  | | | | |  / _` |  / _ \   \___ \  | |/ / | | | |
+${AnsiColor.BLUE}             | |  | | | |_| | | (_| | | (_) |  ____) | |   <  | |_| |
+${AnsiColor.BLUE}             |_|  |_|  \__, |  \__,_|  \___/  |_____/  |_|\_\  \__, |
+${AnsiColor.BLUE}                        __/ |                                   __/ |
+${AnsiColor.BLUE}                       |___/                                   |___/
+
+
+${AnsiColor.BLUE}:: hydosky :: ${spring.application.name}:${AnsiColor.RED}${spring.profiles.active}${AnsiColor.BLUE} :: Running SpringBoot ${spring-boot.version} :: ${AnsiColor.BRIGHT_BLACK}
