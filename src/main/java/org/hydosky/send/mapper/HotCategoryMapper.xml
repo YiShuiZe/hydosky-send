@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hydosky.send.mapper.HotCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="hotCateResultMap" type="org.hydosky.send.entity.HotCategory">
+        <id column="category" property="category"/>
+        <id column="order_count" property="orderCount"/>
+    </resultMap>
+
+    <insert id="insertOrUpdate">
+        insert into hot_category (category,order_count)
+        values
+        (#{hotCategory.category},#{hotCategory.orderCount})
+        on DUPLICATE key update
+        order_count=order_count+values(order_count)
+    </insert>
+
+</mapper>

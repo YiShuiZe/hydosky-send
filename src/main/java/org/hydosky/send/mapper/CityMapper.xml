@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hydosky.send.mapper.CityMapper">
+
+    <insert id="insertOrUpdate">
+        insert into `city` (`name`,order_count)
+        values
+        (#{city.name},#{city.orderCount})
+        on DUPLICATE key update order_count=order_count+values(order_count)
+    </insert>
+
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hydosky.send.mapper.HistoryStatisticsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="hisStaResultMap" type="org.hydosky.send.entity.HistoryStatistics">
+        <id column="id" property="id"/>
+        <id column="order_count" property="orderCount"/>
+        <id column="order_price" property="orderPrice"/>
+        <id column="goods_count" property="goodsCount"/>
+    </resultMap>
+
+    <insert id="insertOrUpdate">
+        insert into history_statistics (`id`,order_count,order_price,goods_count)
+        values
+        (#{historyStatistics.id},#{historyStatistics.orderCount},#{historyStatistics.orderPrice},#{historyStatistics.goodsCount})
+        on DUPLICATE key update
+        order_count=order_count+values(order_count),
+        order_price=order_price+values(order_price),
+        goods_count=goods_count+values(goods_count)
+    </insert>
+
+</mapper>

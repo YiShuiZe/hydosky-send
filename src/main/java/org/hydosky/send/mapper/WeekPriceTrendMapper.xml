@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hydosky.send.mapper.WeekPriceTrendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wptResultMap" type="org.hydosky.send.entity.WeekPriceTrend">
+        <id column="mon_date" property="monDate"/>
+        <id column="order_price" property="orderPrice"/>
+    </resultMap>
+
+    <insert id="insertOrUpdate">
+        insert into week_price_trend (`mon_date`,order_price)
+        values
+        (#{weekPriceTrend.monDate},#{weekPriceTrend.orderPrice})
+        on DUPLICATE key update
+        order_price=order_price+values(order_price)
+    </insert>
+
+</mapper>

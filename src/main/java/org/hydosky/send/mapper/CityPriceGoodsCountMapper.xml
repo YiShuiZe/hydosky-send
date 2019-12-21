@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hydosky.send.mapper.CityPriceGoodsCountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cpgcResultMap" type="org.hydosky.send.entity.CityPriceGoodsCount">
+        <id column="year" property="year"/>
+        <id column="city" property="city"/>
+        <id column="order_price" property="orderPrice"/>
+        <id column="goods_count" property="goodsCount"/>
+    </resultMap>
+
+    <insert id="insertOrUpdate">
+        insert into city_price_goodscount (`year`,city,order_price,goods_count)
+        values
+        (#{cityPriceGoodsCount.year},#{cityPriceGoodsCount.city},#{cityPriceGoodsCount.orderPrice},#{cityPriceGoodsCount.goodsCount})
+        on DUPLICATE key update
+        order_price=order_price+values(order_price),
+        goods_count=goods_count+values(goods_count)
+    </insert>
+
+</mapper>
