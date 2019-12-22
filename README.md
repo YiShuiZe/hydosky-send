@@ -29,22 +29,21 @@
 1.  /home/username（此目录自己选择）下创建相应的目录及文件，username 为你登录用户名。
 
    目录结构如下：
-
    /home/username
+   
+      - -- hydosky-send
+   
+          - -- logs         # 日志存放目录，定期清除，不用担心磁盘爆满
+   
+          - -- shell      			# 脚本存放目录
+   
+               - pid.txt        # 此文件主要存放进程的pid。再次启动时，停掉正在运行的，防止端口冲突
+               - hydosky-send-boot.sh          # 启动脚本  
+   
+          -  -- jars        			# jar包存放目录
+   
+               - hydosky-send.jar
 
-   ​		-- hydosky-send   
-
-   ​			 -- logs      			# 日志存放目录，定期清除，不用担心磁盘爆满
-
-   ​			 -- shell      			# 脚本存放目录
-
-   ​				    	pid.txt        # 此文件主要存放进程的pid。再次启动时，停掉正在运行的，防止端口冲突
-
-   ​                        hydosky-send-boot.sh          # 启动脚本  
-
-   ​			 -- jars        			# jar包存放目录
-
-   ​						hydosky-send.jar
 
 2. hydosky-send-boot.sh脚本内容
 
