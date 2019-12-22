@@ -13,7 +13,7 @@ public class DateUtils extends PropertyEditorSupport {
 	/**
 	 * HH
 	 */
-	public static final SimpleDateFormat hour_time_sdf = new SimpleDateFormat("HH:ss");
+	public static final SimpleDateFormat hour_time_sdf = new SimpleDateFormat("HH:mm");
 
 	/**
 	 * 判断当前时间是否在00:00-00:00之间
