@@ -58,16 +58,17 @@ public class DataProcessRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         while (true) {
-            long sleepTime = 0L;
+            long sleepTime;
             BaseData baseData = baseDataService.getOne(Wrappers.<BaseData>lambdaQuery().last("limit 1"));
             // 开始营业时间，例如9:00
             String startTime = baseData.getStartTime();
             // 结束营业时间，例如18:00
             String endTime = baseData.getEndTime();
+            // 当前日期和时间
+            LocalDateTime localDateTime = LocalDateTime.now();
+
             // 判断当前时间是否是营业时间段
             if (DateUtils.isHourBetween(startTime, endTime)) {
-                // 当前日期和时间
-                LocalDateTime localDateTime = LocalDateTime.now();
 
                 // 查询城市列表
                 List<City> cityList = cityService.list();
@@ -92,6 +93,15 @@ public class DataProcessRunner implements CommandLineRunner {
                     statistics(localDateTime, order);
                 }
 
+            } else {
+                // 营业开始时间和当前时间相差的毫秒数
+                String localTimeStr = localDateTime.toLocalTime().toString();
+                String[] localTimeStrArr = localTimeStr.split(":");
+                if (Integer.parseInt(localTimeStrArr[0]) < Integer.parseInt(startTime.split(":")[0])) {
+                    sleepTime = DateUtils.millsBetween(localTimeStr, startTime);
+                } else {
+                    sleepTime = DateUtils.millsBetween("00:00", startTime) + DateUtils.millsBetween(localTimeStr, "23:59");
+                }
             }
             // 时间随机区间
             log.info("【休眠时间】 {}ms", sleepTime);
