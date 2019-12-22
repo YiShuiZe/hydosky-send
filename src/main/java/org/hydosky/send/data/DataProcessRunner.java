@@ -82,9 +82,9 @@ public class DataProcessRunner implements CommandLineRunner {
                 // 根据 城市系数 非均匀随机 选择城市
                 String cityName = getCityName(cityList, weights);
 
-
                 if (!StringUtils.isBlank(cityName)) {
-                    Order order = generateOrder(localDateTime, cityName);
+                    Order order = generateOrder(localDateTime, cityName,
+                            baseData.getGoodsCountScope(), baseData.getPriceScope());
                     // 将订单插入数据库
                     orderService.save(order);
                     log.info("【生成订单】 order: {}", order.toString());
@@ -95,7 +95,7 @@ public class DataProcessRunner implements CommandLineRunner {
             }
             // 时间随机区间
             log.info("【休眠时间】 {}ms", sleepTime);
-            Thread.sleep(sleepTime);
+            Thread.sleep(600000L);
         }
     }
 
@@ -163,7 +163,7 @@ public class DataProcessRunner implements CommandLineRunner {
     /**
      * 生成订单
      */
-    private Order generateOrder(LocalDateTime localDateTime, String cityName) {
+    private Order generateOrder(LocalDateTime localDateTime, String cityName, String goodsCountScope, String priceScope) {
         // 查找到货物分类
         List<CategoryVO> categoryVOList = categoryService.treeList();
         int categorySize = categoryVOList.size();
@@ -177,11 +177,16 @@ public class DataProcessRunner implements CommandLineRunner {
         // 随机得到订单二级分类
         String typeName = type.getName();
 
-        // 随机得到货物数量
-        Integer number = random.nextInt(2) + 2;
-        // 随机得到订单运费
-        //Integer price = (random.nextInt(100) + 10) * number;
-        Integer price = random.nextInt(4) + 18;
+        // 随机得到货物数量 2:4
+        String[] goodsCountScopeArr = goodsCountScope.split(":");
+        int minGoodsCount = Integer.parseInt(goodsCountScopeArr[0]);
+        int maxGoodsCount = Integer.parseInt(goodsCountScopeArr[1]);
+        Integer number = random.nextInt(maxGoodsCount - minGoodsCount) + minGoodsCount;
+        // 随机得到订单运费 18:22
+        String[] priceScopeArr = priceScope.split(":");
+        int minPrice = Integer.parseInt(priceScopeArr[0]);
+        int maxPrice = Integer.parseInt(priceScopeArr[1]);
+        Integer price = random.nextInt(maxPrice - minPrice) + minPrice;
 
         Order order = Order.of()
                 .setCategory(categoryName)
