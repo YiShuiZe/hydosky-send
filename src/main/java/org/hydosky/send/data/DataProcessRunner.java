@@ -95,7 +95,7 @@ public class DataProcessRunner implements CommandLineRunner {
             }
             // 时间随机区间
             log.info("【休眠时间】 {}ms", sleepTime);
-            Thread.sleep(600000L);
+            Thread.sleep(sleepTime);
         }
     }
 
