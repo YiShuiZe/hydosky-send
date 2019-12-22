@@ -46,6 +46,14 @@ public class BaseData implements Serializable {
     @Length(max = 5, message = "结束营业时间最大长度为5")
     private String endTime;
 
+    @NotNull(message = "货物件数区间不能为空")
+    @Length(max = 8, message = "货物件数区间最大长度为8")
+    private String goodsCountScope;
+
+    @NotNull(message = "订单金额区间不能为空")
+    @Length(max = 8, message = "订单金额区间最大长度为8")
+    private String priceScope;
+
     @NotNull(message = "天数不能为空")
     @Min(value = 1, message = "天数最小值为1")
     @Max(value = 999, message = "天数最大值为999")
