@@ -1,6 +1,7 @@
 package org.hydosky.send.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.hydosky.send.vo.CityVO;
 import org.hydosky.send.vo.CommonResponse;
 import org.hydosky.send.entity.*;
 import org.hydosky.send.service.*;
@@ -50,6 +51,7 @@ public class StatisticsController {
                     DateHotType.of()
                         .setDate(LocalDate.now())
                 ).orderByDesc(DateHotType::getOrderCount)
+                .last("LIMIT 10")
         );
         return dateHotTypeList;
     }
@@ -59,42 +61,81 @@ public class StatisticsController {
      * zoom lng lat
      */
     @GetMapping("/hot-city")
-    public List<City> hotCity() {
+    public List<CityVO> hotCity() {
         List<City> hotCityList = cityService.list();
-        // TODO 转成VO，将orderCount转换成zoom
-        return hotCityList;
+        // 获取历史总订单数量
+        HistoryStatistics historyStatistics = historyStatisticsService.getOne(
+                Wrappers.lambdaQuery(
+                        HistoryStatistics.of()
+                                .setId("history")));
+        List<CityVO> hotCityVOList = new ArrayList();
+        hotCityList.forEach(city -> {
+            CityVO cityVO = CityVO.of();
+            if (city.getOrderCount() == 0L || historyStatistics == null || historyStatistics.getOrderCount() == 0L) {
+                cityVO.setZoom(0.0D);
+            } else {
+                Long orderCount = historyStatistics.getOrderCount();
+                // 使用该城市的订单数量除以历史总订单数量
+                Double zoom = city.getOrderCount() * 1.00 / orderCount * 10;
+                String zoomStr = String.valueOf(zoom);
+                String zoomNewStr = zoomStr.substring(0, zoomStr.indexOf(".") + 4);
+                cityVO.setZoom(Double.valueOf(zoomNewStr));
+            }
+            cityVO.setName(city.getName())
+                    .setLat(city.getLat())
+                    .setLng(city.getLng())
+                    .setOrderCount(city.getOrderCount());
+            hotCityVOList.add(cityVO);
+        });
+        return hotCityVOList;
     }
 
     /**
      * 今日 订单总量、订单总额、货物总量
      */
     @GetMapping("/date-statistics")
-    public Map<String, String> dateStatistics() {
+    public List<Map<String, String>> dateStatistics() {
         DateStatistics dateStatistics = dateStatisticsService.getOne(
                 Wrappers.lambdaQuery(
                         DateStatistics.of()
                                 .setDate(LocalDate.now())));
-        Map<String, String> map = new HashMap<>();
-        map.put("今日订单总量", dateStatistics.getOrderCount() + "笔");
-        map.put("今日订单总额", dateStatistics.getOrderPrice() + "元");
-        map.put("今日货物总量", dateStatistics.getGoodsCount() + "件");
-        return map;
+        List<Map<String, String>> hashMaps = new ArrayList<>();
+        HashMap<String, String> map = new LinkedHashMap<>();
+        if (dateStatistics == null) {
+            map.put("今日订单总量", 0 + "笔");
+            map.put("今日订单总额", 0 + "元");
+            map.put("今日货物总量", 0 + "件");
+        } else {
+            map.put("今日订单总量", dateStatistics.getOrderCount() + "笔");
+            map.put("今日订单总额", dateStatistics.getOrderPrice() + "元");
+            map.put("今日货物总量", dateStatistics.getGoodsCount() + "件");
+        }
+        hashMaps.add(map);
+        return hashMaps;
     }
 
     /**
      * 历史 订单总量、订单总额、货物总量
      */
     @GetMapping("/history-statistics")
-    public Map<String, String> historyStatistics() {
+    public List<Map<String, String>> historyStatistics() {
         HistoryStatistics historyStatistics = historyStatisticsService.getOne(
                 Wrappers.lambdaQuery(
                         HistoryStatistics.of()
                                 .setId("history")));
-        Map<String, String> map = new HashMap<>();
-        map.put("历史订单总量", historyStatistics.getOrderCount() + "笔");
-        map.put("历史订单总额", historyStatistics.getOrderPrice() + "元");
-        map.put("历史货物总量", historyStatistics.getGoodsCount() + "件");
-        return map;
+        List<Map<String, String>> hashMaps = new ArrayList<>();
+        Map<String, String> map = new LinkedHashMap<>();
+        if (historyStatistics == null) {
+            map.put("历史订单总量", 0 + "笔");
+            map.put("历史订单总额", 0 + "元");
+            map.put("历史货物总量", 0 + "件");
+        } else {
+            map.put("历史订单总量", historyStatistics.getOrderCount() + "笔");
+            map.put("历史订单总额", historyStatistics.getOrderPrice() + "元");
+            map.put("历史货物总量", historyStatistics.getGoodsCount() + "件");
+        }
+        hashMaps.add(map);
+        return hashMaps;
     }
 
     /**
@@ -161,7 +202,7 @@ public class StatisticsController {
         List<WeekPriceTrend> weekPriceTrendList = weekPriceTrendService.list(
                 Wrappers.<WeekPriceTrend>lambdaQuery()
                         .le(WeekPriceTrend::getMonDate, LocalDate.now())
-                        .orderByAsc(WeekPriceTrend::getMonDate)
+                        .orderByDesc(WeekPriceTrend::getMonDate)
                         .last("LIMIT 8"));
         // 自定义日期格式化
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM.dd");
