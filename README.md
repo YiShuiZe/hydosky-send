@@ -1,5 +1,25 @@
 # hydosky-send
 **环境**：mysql 5.7及以上、jdk 1.8
+
+**项目结构**：
+
+hydosky-send     # 项目名
+
+- doc      #   存放sql脚本
+- src.main
+  - java.org.hydosky.send
+    - config                     #  相关配置项
+    - constant                 # 系统常量池
+    - controller               #  接口
+    - data                         #  生成订单 及 统计数据
+    - entity                       #  实体类
+    - mapper                   # 持久化层
+    - response                 # 响应体
+    - schedule                 # 定期删除 随时间增长的数据
+    - service                     # 业务层 
+    - util                            # 工具类
+    - vo                              # 视图类
+  - resources                 # 配置文件
 ## 1. 使用步骤
 
 ### 1.1 克隆或下载项目
